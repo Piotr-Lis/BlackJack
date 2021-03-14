@@ -1,4 +1,5 @@
 from cardset import CardSet
+from user import User
 
 
 class Game:
@@ -12,6 +13,29 @@ class Game:
         james_set = CardSet()
         self.james_set = james_set
         self.result = None
+        player = User('')
+        self.player = player
+        self.pot = 0
+
+    def start(self):
+        print('#### BLACK JACK ####')
+        print('Hi! My name is James. What is your name?')
+        u_name = input()
+        self.player = User(u_name)
+        print(f'Nice to meet you {self.player.name}.\nWanna play Black Jack? Cash in is 1000$ (y/n)')
+
+    def bet(self):
+        print('How much you wanna bet?')
+        while True:
+            answer = input()
+            if answer.isdigit():
+                if int(answer) > self.player.cash:
+                    print('Nice try. You do not have such money! Try again...')
+                else:
+                    self.pot = int(answer)
+                    break
+            else:
+                print('Wrong number... try again.')
 
     @staticmethod
     def decision():
@@ -26,7 +50,8 @@ class Game:
         self.user_set.set_of_cards = []
         self.user_set.take_card(self.deck)
         self.user_set.take_card(self.deck)
-        print(self.user_set)
+        print(f'Pot: {self.pot}$')
+        print(f'Your cards: {self.user_set}')
         u_score = self.user_set.score
         print(f'Your Score: {u_score}.\nHit another? (y/n)')
         while self.decision():
@@ -38,6 +63,7 @@ class Game:
                 self.result = False
                 return False
             print(f'Your score: {u_score}.\nHit another? (y/n)')
+        self.result = True
         return True
 
     def james_turn(self):
@@ -55,10 +81,16 @@ class Game:
             print(f'My score: {j_score}.')
 
     def check(self):
-
         if self.james_set.score > 21:
             print('Damn! I have lost...\n')
             self.result = True
         elif self.james_set.score >= self.user_set.score:
             print('I win!\n')
             self.result = False
+
+    def the_bill(self):
+        if self.result:
+            self.player.win(self.pot)
+        else:
+            self.player.lost(self.pot)
+        print(self.player)
