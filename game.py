@@ -46,16 +46,28 @@ class Game:
                 continue
             return True if answer in ['Y', 'y'] else False
 
+    def user_hit(self):
+        self.user_set.take_card(self.deck)
+        if len(self.deck) == 0:
+            print('Last card from the deck taken. Cards shuffled, new deck introduced.')
+            self.deck.new_deck()
+
+    def james_hit(self):
+        self.james_set.take_card(self.deck)
+        if len(self.deck) == 0:
+            print('Last card from the deck taken. Cards shuffled, new deck introduced.')
+            self.deck.new_deck()
+
     def user_turn(self):
         self.user_set.set_of_cards = []
-        self.user_set.take_card(self.deck)
-        self.user_set.take_card(self.deck)
+        self.user_hit()
+        self.user_hit()
         print(f'Pot: {self.pot}$')
         print(f'Your cards: {self.user_set}')
         u_score = self.user_set.score
         print(f'Your Score: {u_score}.\nHit another? (y/n)')
         while self.decision():
-            self.user_set.take_card(self.deck)
+            self.user_hit()
             print(self.user_set)
             u_score = self.user_set.score
             if u_score > 21:
@@ -68,14 +80,14 @@ class Game:
 
     def james_turn(self):
         self.james_set.set_of_cards = []
-        self.james_set.take_card(self.deck)
-        self.james_set.take_card(self.deck)
+        self.james_hit()
+        self.james_hit()
         print(self.james_set)
         j_score = self.james_set.score
         print(f'My score: {j_score}. ', end='')
         while j_score < self.user_set.score and j_score < 21:
             print('I\'ll take another...')
-            self.james_set.take_card(self.deck)
+            self.james_hit()
             print(self.james_set)
             j_score = self.james_set.score
             print(f'My score: {j_score}.')
